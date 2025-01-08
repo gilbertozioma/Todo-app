@@ -61,20 +61,20 @@ class Todo
         return $stmt;
     }
 
-    public function update()
+    public function update($id)
     {
+        $this->id = $id;
         $query = "UPDATE " . $this->table_name . "
-                 SET title = :title, description = :description, status = :status 
+                 SET title = :title, description = :description
                  WHERE id = :id";
-
+    
         $stmt = $this->conn->prepare($query);
-
+    
         // Bind values
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":id", $this->id);
-
+    
         if ($stmt->execute()) {
             return true;
         }
