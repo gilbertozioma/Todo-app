@@ -24,6 +24,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // echo "<script>alert('Task status updated!');</script>";
         }
     }
+
+    if (isset($_POST['delete_todo'])) {
+        if ($taskManager->delete($_POST['todo_id'])) {
+            // echo "<script>alert('Todo deleted successfully!');</script>";
+        }
+    }
+
+    
+    if (isset($_POST['edit_todo'])) {
+        $id = $_POST['todo_id'];
+        $taskManager->setTitle($_POST['title']);
+        $taskManager->setDescription($_POST['description']);
+        if ($taskManager->update($id)) {
+            // echo "<script>alert('Todo updated successfully!');</script>";
+        }
+    }
 }
 ?>
 
@@ -156,6 +172,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php echo ucfirst($row['status']); ?>
                                         </label>
                                     </div>
+                                    <button type="button" class="btn ms-5 p-0" data-bs-toggle="modal" data-bs-target="#editTodoModal<?= $row['id']; ?>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn ms-3 p-0" data-bs-toggle="modal" data-bs-target="#deleteTodoModal<?= $row['id']; ?>">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editTodoModal<?= $row['id']; ?>" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Todo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($row['title']); ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea class="form-control" id="description" name="description" rows="4"><?php echo htmlspecialchars($row['description']); ?></textarea>
+                                    </div>
+                                    <input type="hidden" name="todo_id" value="<?php echo $row['id']; ?>">
+                                    <button type="submit" name="edit_todo" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Save Changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteTodoModal<?= $row['id']; ?>" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Delete Todo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this todo?</p>
+                                <form method="POST">
+                                    <input type="hidden" name="todo_id" value="<?php echo $row['id']; ?>">
+                                    <button type="submit" name="delete_todo" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
                                 </form>
                             </div>
                         </div>
